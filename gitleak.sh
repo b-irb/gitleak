@@ -1,5 +1,26 @@
 #!/bin/bash
 
+usage () {
+    printf -- "USAGE: $0 [OPTIONS] [TEXT]\n\nOPTIONS\n\n"
+    printf -- "\t-r  Clone and scan specified remote git repository.\n"
+    printf -- "\t-d  Scan specified local directory.\n"
+    exit;
+}
+
+if [ $# -lt 2 ]; then
+    usage
+fi;
+
+case "$1" in
+    "-r")
+        repo_dir=$(mktemp -d);
+        if ! git clone $2 $repo_dir; then
+            exit;
+        fi;;
+    "-d") repo_dir=$2;;
+    *) usage;;
+esac
+
 declare -A patterns=(
     ["RSA private key"]="-----BEGIN RSA PRIVATE KEY-----"
     ["SSH (DSA) private key"]="-----BEGIN DSA PRIVATE KEY-----"
@@ -13,13 +34,9 @@ declare -A patterns=(
     ["Heroku API key"]="[hH][eE][rR][oO][kK][uU].*[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}"
 );
 
-clone_dir=$(mktemp -d)
+echo "scanning $repo_dir"
 
-if ! git clone $1 $clone_dir; then
-    exit;
-fi;
-
-for f in $(find $clone_dir -type f); do
+for f in $(find $repo_dir -type f); do
     for classification in "${!patterns[@]}"; do
         if grep -q -e "${patterns[$classification]}" $f; then
             echo -e "\e[33m$f\t\e[31m$classification\e[0m";
