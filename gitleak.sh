@@ -25,6 +25,7 @@ declare -A patterns=(
     ["RSA private key"]="-----BEGIN RSA PRIVATE KEY-----"
     ["SSH (DSA) private key"]="-----BEGIN DSA PRIVATE KEY-----"
     ["SSH (EC) private key"]="-----BEGIN EC PRIVATE KEY-----"
+    ["OpenSSH private key"]="-----BEGIN OPENSSH PRIVATE KEY-----"
     ["PGP private key"]="-----BEGIN PGP PRIVATE KEY BLOCK-----"
     ["Access token"]="[aA][cC][cC][eE][sS][sS]_?[tT][oO][kK][eE][nN].*"
     ["Unknown secret"]="[sS][eE][cC][rR][eE][tT].*[\'\\\"]"
